@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Grain from "@/components/media/Grain";
 import WorkGrid from "@/components/film/WorkGrid";
 import { SectionHeading } from "@/components/ui/Surface";
 import { filmHome } from "@/content/film";
@@ -8,6 +9,7 @@ export const metadata = { title: "AVH FILM — فیلم تبلیغاتی، CGI �
 export default function FilmHomePage() {
   return (
     <>
+      <Grain />
       {/* ۰۱ — هیروی نمایشریل (پوستر تا اتصال Cloudflare Stream) */}
       <section className="relative flex min-h-[88dvh] items-center justify-center overflow-hidden">
         {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -79,7 +81,7 @@ export default function FilmHomePage() {
       </section>
 
       {/* ۰۵ — فلسفه (سطح کاغذ) */}
-      <section className="bg-paper text-ink">
+      <section data-surface="paper" className="bg-paper text-ink">
         <div className="mx-auto max-w-5xl px-6 py-28 text-center">
           <p
             className="reveal font-extrabold"

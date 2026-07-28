@@ -1,4 +1,5 @@
-import { Button, ButtonLink } from "@/components/ui/Button";
+import { Button } from "@/components/ui/Button";
+import ButtonLink from "@/components/shared/ButtonLink";
 import { Tag } from "@/components/ui/Chip";
 import { Card, GlassPanel, SectionHeading } from "@/components/ui/Surface";
 import { Skeleton, EmptyState, Notice } from "@/components/ui/Feedback";

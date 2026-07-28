@@ -19,10 +19,10 @@ export default function Accordion({
               size={20}
               strokeWidth={1.5}
               aria-hidden
-              className="shrink-0 text-kodak transition-transform duration-[var(--duration-base)] group-open:rotate-45"
+              className="shrink-0 text-[var(--color-accent-text)] transition-transform duration-[var(--duration-base)] group-open:rotate-45"
             />
           </summary>
-          <p className="max-w-[60ch] pb-5 leading-[1.8] text-paper-70">{item.a}</p>
+          <p className="max-w-[60ch] pb-5 leading-[1.8] text-muted">{item.a}</p>
         </details>
       ))}
     </div>

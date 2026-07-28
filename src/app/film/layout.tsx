@@ -3,12 +3,12 @@ import SmoothScroll from "@/components/motion/SmoothScroll";
 import RevealObserver from "@/components/motion/RevealObserver";
 import Cursor from "@/components/motion/Cursor";
 import MobileMenu from "@/components/shared/MobileMenu";
-import { ButtonLink } from "@/components/ui/Button";
+import ButtonLink from "@/components/shared/ButtonLink";
 import { siteSettings } from "@/content/site";
 
 export default function FilmLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div data-layer="film" className="grain">
+    <div data-layer="film">
       <SmoothScroll />
       <RevealObserver />
       <Cursor />

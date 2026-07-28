@@ -1,13 +1,15 @@
-import Link from "next/link";
 import { cn } from "@/lib/cn";
 
 export type ButtonVariant = "kodak" | "hairline" | "ghost" | "danger";
 export type ButtonSize = "sm" | "md" | "lg";
 
 /**
- * The single action primitive.
- * `kodak` is the only filled variant — it carries most of the page's 10% accent
- * budget, so a screen gets exactly one. Everything else is a hairline or ghost.
+ * The single action primitive. Framework-free by design: this file must not
+ * import next/link, so the compiled component renders anywhere (including the
+ * design-system bundle). Links reuse the look via `buttonClasses`.
+ *
+ * `kodak` is the only filled variant — it carries most of a page's 10% accent
+ * budget, so a screen gets exactly one.
  */
 const base =
   "inline-flex items-center justify-center gap-2 font-bold cursor-pointer " +
@@ -15,13 +17,10 @@ const base =
   "disabled:pointer-events-none disabled:opacity-40 aria-disabled:pointer-events-none aria-disabled:opacity-40";
 
 const variants: Record<ButtonVariant, string> = {
-  kodak:
-    "bg-kodak text-ink hover:-translate-y-px active:translate-y-0 active:bg-kodak-press",
-  hairline:
-    "border border-border text-paper hover:border-kodak hover:text-kodak",
+  kodak: "bg-kodak text-ink hover:-translate-y-px active:translate-y-0 active:bg-kodak-press",
+  hairline: "border border-border text-paper hover:border-kodak hover:text-kodak",
   ghost: "text-paper-70 hover:text-paper",
-  danger:
-    "border border-destructive text-destructive hover:bg-destructive hover:text-paper",
+  danger: "border border-destructive text-destructive hover:bg-destructive hover:text-paper",
 };
 
 const sizes: Record<ButtonSize, string> = {
@@ -30,16 +29,17 @@ const sizes: Record<ButtonSize, string> = {
   lg: "min-h-14 px-10 text-lg",
 };
 
-type CommonProps = {
+/** Class recipe — use on any element that should look like a button (e.g. next/link). */
+export function buttonClasses({
+  variant = "kodak",
+  size = "md",
+  className,
+}: {
   variant?: ButtonVariant;
   size?: ButtonSize;
-  loading?: boolean;
   className?: string;
-  children: React.ReactNode;
-};
-
-function classes({ variant = "kodak", size = "md", className }: CommonProps) {
-  return cn(base, variants[variant], sizes[size], className);
+} = {}) {
+  return cn(base, variants[variant], sizes[size], "rounded-[var(--radius-control)]", className);
 }
 
 function Spinner() {
@@ -58,40 +58,20 @@ export function Button({
   className,
   children,
   ...props
-}: CommonProps & React.ButtonHTMLAttributes<HTMLButtonElement>) {
+}: {
+  variant?: ButtonVariant;
+  size?: ButtonSize;
+  loading?: boolean;
+} & React.ButtonHTMLAttributes<HTMLButtonElement>) {
   return (
     <button
       {...props}
       disabled={props.disabled || loading}
       aria-busy={loading || undefined}
-      className={classes({ variant, size, className, children })}
-      style={{ borderRadius: "var(--radius-control)", ...props.style }}
+      className={buttonClasses({ variant, size, className })}
     >
       {loading && <Spinner />}
       {children}
     </button>
-  );
-}
-
-export function ButtonLink({
-  href,
-  variant,
-  size,
-  className,
-  children,
-  ...props
-}: CommonProps & { href: string } & Omit<
-    React.ComponentProps<typeof Link>,
-    "href" | "className" | "children"
-  >) {
-  return (
-    <Link
-      href={href}
-      {...props}
-      className={classes({ variant, size, className, children })}
-      style={{ borderRadius: "var(--radius-control)" }}
-    >
-      {children}
-    </Link>
   );
 }

@@ -1,6 +1,7 @@
+import Grain from "@/components/media/Grain";
 import WorkCard from "@/components/film/WorkCard";
 import { Tag } from "@/components/ui/Chip";
-import { ButtonLink } from "@/components/ui/Button";
+import ButtonLink from "@/components/shared/ButtonLink";
 import { verticalReels, verticalPage } from "@/content/film";
 
 export const metadata = { title: "عمودی — تولید ۹:۱۶" };
@@ -8,6 +9,7 @@ export const metadata = { title: "عمودی — تولید ۹:۱۶" };
 export default function VerticalPage() {
   return (
     <>
+      <Grain />
       {/* ۰۱ — هیروی بیانیه */}
       <section className="mx-auto max-w-7xl px-6 pb-16 pt-28">
         <h1
@@ -44,7 +46,7 @@ export default function VerticalPage() {
       </section>
 
       {/* ۰۳ — یادداشت فرایند (کاغذ) */}
-      <section className="bg-paper text-ink">
+      <section data-surface="paper" className="bg-paper text-ink">
         <div className="mx-auto max-w-5xl px-6 py-20">
           <p className="reveal max-w-[60ch] text-lg leading-[1.8]">{verticalPage.processNote}</p>
         </div>

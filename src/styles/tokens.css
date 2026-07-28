@@ -69,6 +69,11 @@
 }
 
 :root {
+  /* Surface-relative roles. Components reference these instead of ink/paper
+     directly, so the same component is legible on either ground. */
+  --color-accent-text: var(--color-kodak); /* kodak reads 11.4:1 on ink */
+  --color-error: #FF7A6B;                  /* 7.7:1 on ink */
+
   --z-sticky: 10;
   --z-nav: 20;
   --z-overlay: 40;
@@ -86,6 +91,17 @@
   --scrim: rgb(10 10 10 / 0.6);
 
   --cursor-size: 20px;
+}
+
+/* Paper surfaces re-point the surface-relative roles. Kodak as TEXT on paper is
+   forbidden (1.6:1), so the accent role becomes ink here and the error red
+   darkens to keep 4.5:1 — no component needs to know which ground it is on. */
+[data-surface="paper"] {
+  color: var(--color-ink);
+  --color-border: var(--color-border-paper);
+  --color-muted: var(--color-ink-60);
+  --color-accent-text: var(--color-ink);
+  --color-error: #B42318;
 }
 
 [data-layer="film"]     { --grain-opacity: 0.12; }

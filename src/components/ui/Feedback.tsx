@@ -30,7 +30,7 @@ export function EmptyState({
   return (
     <div className="flex flex-col items-center gap-4 border border-dashed border-border px-6 py-16 text-center">
       <p className="text-lg font-bold">{title}</p>
-      {body && <p className="max-w-[44ch] text-sm text-paper-40">{body}</p>}
+      {body && <p className="max-w-[44ch] text-sm text-muted">{body}</p>}
       {action}
     </div>
   );
@@ -45,9 +45,9 @@ export function Notice({
   children: React.ReactNode;
 }) {
   const tones = {
-    info: "border-border text-paper-70",
-    success: "border-kodak text-kodak",
-    error: "border-destructive text-destructive",
+    info: "border-border text-muted",
+    success: "border-[var(--color-accent-text)] text-[var(--color-accent-text)]",
+    error: "border-[var(--color-error)] text-[var(--color-error)]",
   } as const;
 
   return (

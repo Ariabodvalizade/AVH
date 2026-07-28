@@ -11,11 +11,11 @@ import { cn } from "@/lib/cn";
  */
 
 const control =
-  "w-full min-h-11 bg-transparent border px-4 py-2.5 text-base text-paper " +
-  "placeholder:text-paper-40 transition-colors duration-[var(--duration-fast)] " +
-  "border-border hover:border-paper-40 focus:border-kodak " +
+  "w-full min-h-11 bg-transparent border px-4 py-2.5 text-base text-current " +
+  "placeholder:text-muted transition-colors duration-[var(--duration-fast)] " +
+  "border-border hover:border-muted focus:border-kodak " +
   "disabled:opacity-40 disabled:pointer-events-none " +
-  "read-only:border-dashed read-only:text-paper-70";
+  "read-only:border-dashed read-only:text-muted";
 
 type FieldShellProps = {
   label: string;
@@ -33,10 +33,10 @@ export function Field({ label, helper, error, required, children }: FieldShellPr
 
   return (
     <div className="flex flex-col gap-2">
-      <label htmlFor={id} className="text-sm font-bold text-paper">
+      <label htmlFor={id} className="text-sm font-bold text-current">
         {label}
         {required && (
-          <span className="ms-1 text-kodak" aria-hidden>
+          <span className="ms-1 text-[var(--color-accent-text)]" aria-hidden>
             *
           </span>
         )}
@@ -45,12 +45,12 @@ export function Field({ label, helper, error, required, children }: FieldShellPr
       {children({ id, describedBy, invalid: Boolean(error) })}
 
       {error && (
-        <p id={errorId} role="alert" className="text-sm text-destructive">
+        <p id={errorId} role="alert" className="text-sm text-[var(--color-error)]">
           {error}
         </p>
       )}
       {helper && (
-        <p id={helperId} className="text-sm text-paper-40">
+        <p id={helperId} className="text-sm text-muted">
           {helper}
         </p>
       )}
@@ -67,7 +67,7 @@ export function Input({
     <input
       {...props}
       aria-invalid={invalid || undefined}
-      className={cn(control, invalid && "border-destructive", className)}
+      className={cn(control, invalid && "border-[var(--color-error)]", className)}
       style={{ borderRadius: "var(--radius-control)" }}
     />
   );
@@ -83,7 +83,7 @@ export function Textarea({
       {...props}
       rows={props.rows ?? 4}
       aria-invalid={invalid || undefined}
-      className={cn(control, "resize-y leading-[1.8]", invalid && "border-destructive", className)}
+      className={cn(control, "resize-y leading-[1.8]", invalid && "border-[var(--color-error)]", className)}
       style={{ borderRadius: "var(--radius-control)" }}
     />
   );
@@ -99,7 +99,7 @@ export function Select({
     <select
       {...props}
       aria-invalid={invalid || undefined}
-      className={cn(control, "cursor-pointer appearance-none", invalid && "border-destructive", className)}
+      className={cn(control, "cursor-pointer appearance-none", invalid && "border-[var(--color-error)]", className)}
       style={{ borderRadius: "var(--radius-control)" }}
     >
       {children}
@@ -127,7 +127,7 @@ export function Checkbox({
         )}
         style={{ borderRadius: "var(--radius-control)" }}
       />
-      <label htmlFor={id} className="cursor-pointer text-sm leading-[1.8] text-paper-70">
+      <label htmlFor={id} className="cursor-pointer text-sm leading-[1.8] text-muted">
         {label}
       </label>
     </div>

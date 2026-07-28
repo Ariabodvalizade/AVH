@@ -21,7 +21,7 @@ export default function NumberedList({
         >
           <span
             aria-hidden
-            className="font-extrabold text-kodak tabular-nums"
+            className="font-extrabold text-[var(--color-accent-text)] tabular-nums"
             style={{ fontSize: size === "lg" ? "var(--text-h3)" : "1.5rem" }}
           >
             {faDigits(i + 1)}
@@ -34,7 +34,7 @@ export default function NumberedList({
               {item.title}
             </h3>
             {item.body && (
-              <p className="mt-2 max-w-[56ch] leading-[1.8] text-paper-70">{item.body}</p>
+              <p className="mt-2 max-w-[56ch] leading-[1.8] text-muted">{item.body}</p>
             )}
           </div>
         </li>
