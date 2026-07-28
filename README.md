@@ -32,8 +32,13 @@ npm run start    # اجرای بیلد → http://localhost:3000
 | `/` | دروازهٔ برند (اسپلیت‌اسکرین فیلم / فکتوری) — آماده |
 | `/film` | خانهٔ فیلم — آماده |
 | `/film/vertical` | تولید عمودی ۹:۱۶ — آماده |
+| `/film/bts` | پشت صحنه — جستارهای عکاسی — آماده |
+| `/film/vvip` | تولید ممتاز — آماده |
+| `/factory` | خانهٔ فکتوری — آماده |
+| `/factory/glasses` | عینک AR — اسکرولی‌تلینگ سه‌بعدی — آماده |
+| `/factory/ar-catalog` | کاتالوگ AR — آماده |
 | `/ui-kit` | کیت رابط کاربری — مرجع زندهٔ همهٔ اجزا و حالت‌ها (noindex) |
-| `/film/bts` · `/film/vvip` · `/about` · `/blog` · `/factory` | صفحهٔ «در حال ساخت» |
+| `/about` · `/blog` | صفحهٔ «در حال ساخت» |
 
 ## ساختار
 
@@ -48,7 +53,8 @@ src/
 │  │                     #   Accordion · NumberedList
 │  ├─ motion/            # SmoothScroll (Lenis) · RevealObserver · Cursor
 │  ├─ media/             # MediaFrame · ShowreelPlayer (Cloudflare Stream)
-│  ├─ film/              # WorkGrid · WorkCard
+│  ├─ film/              # WorkGrid · WorkCard · Polaroid · FilmStrip
+│  ├─ three/             # GlassesScene — فقط با dynamic import و ssr:false
 │  └─ shared/            # MobileMenu · ComingSoon
 ├─ lib/                  # cn() · faDigits()
 ├─ content/              # داده‌های استاب، هم‌شکلِ مدل Payload CMS
