@@ -1,5 +1,6 @@
 import Link from "next/link";
 import WorkGrid from "@/components/film/WorkGrid";
+import { SectionHeading } from "@/components/ui/Surface";
 import { filmHome } from "@/content/film";
 
 export const metadata = { title: "AVH FILM — فیلم تبلیغاتی، CGI و موشن سه‌بعدی" };
@@ -41,12 +42,7 @@ export default function FilmHomePage() {
 
       {/* ۰۲ — کارهای منتخب */}
       <section id="work" className="mx-auto max-w-7xl px-6 py-24">
-        <div className="reveal mb-10 flex items-baseline gap-4">
-          <h2 className="font-extrabold" style={{ fontSize: "var(--text-h2)" }}>
-            کارهای منتخب
-          </h2>
-          <span className="h-px flex-1 bg-border" aria-hidden />
-        </div>
+        <SectionHeading className="reveal mb-10">کارهای منتخب</SectionHeading>
         <WorkGrid />
       </section>
 

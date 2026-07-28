@@ -32,6 +32,7 @@ npm run start    # اجرای بیلد → http://localhost:3000
 | `/` | دروازهٔ برند (اسپلیت‌اسکرین فیلم / فکتوری) — آماده |
 | `/film` | خانهٔ فیلم — آماده |
 | `/film/vertical` | تولید عمودی ۹:۱۶ — آماده |
+| `/ui-kit` | کیت رابط کاربری — مرجع زندهٔ همهٔ اجزا و حالت‌ها (noindex) |
 | `/film/bts` · `/film/vvip` · `/about` · `/blog` · `/factory` | صفحهٔ «در حال ساخت» |
 
 ## ساختار
@@ -43,10 +44,13 @@ src/
 │  ├─ page.tsx           # دروازهٔ برند
 │  └─ film/              # لایهٔ فیلم (گرین، ناوبری، فوتر)
 ├─ components/
+│  ├─ ui/                # Button · Field · Chip · Surface · Feedback · Modal
+│  │                     #   Accordion · NumberedList
 │  ├─ motion/            # SmoothScroll (Lenis) · RevealObserver · Cursor
-│  ├─ media/             # MediaFrame — سیاه‌وسفید در سکون، رنگ با reveal
-│  ├─ film/              # WorkGrid
-│  └─ shared/
+│  ├─ media/             # MediaFrame · ShowreelPlayer (Cloudflare Stream)
+│  ├─ film/              # WorkGrid · WorkCard
+│  └─ shared/            # MobileMenu · ComingSoon
+├─ lib/                  # cn() · faDigits()
 ├─ content/              # داده‌های استاب، هم‌شکلِ مدل Payload CMS
 ├─ fonts/                # وریبل woff2 (self-hosted)
 └─ styles/tokens.css     # توکن‌های قفل‌شدهٔ برند

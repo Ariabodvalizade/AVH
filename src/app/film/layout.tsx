@@ -2,6 +2,8 @@ import Link from "next/link";
 import SmoothScroll from "@/components/motion/SmoothScroll";
 import RevealObserver from "@/components/motion/RevealObserver";
 import Cursor from "@/components/motion/Cursor";
+import MobileMenu from "@/components/shared/MobileMenu";
+import { ButtonLink } from "@/components/ui/Button";
 import { siteSettings } from "@/content/site";
 
 export default function FilmLayout({ children }: { children: React.ReactNode }) {
@@ -38,13 +40,12 @@ export default function FilmLayout({ children }: { children: React.ReactNode }) 
               </li>
             ))}
           </ul>
-          <Link
-            href="/film#contact"
-            className="border border-kodak px-4 py-1.5 text-sm font-bold text-kodak transition-colors duration-[var(--duration-fast)] hover:bg-kodak hover:text-ink"
-            style={{ borderRadius: "var(--radius-control)" }}
-          >
-            تماس
-          </Link>
+          <div className="flex items-center gap-2">
+            <ButtonLink href="/film#contact" variant="hairline" size="sm" className="hidden md:inline-flex">
+              تماس
+            </ButtonLink>
+            <MobileMenu items={siteSettings.filmNav} />
+          </div>
         </nav>
       </header>
 
@@ -59,13 +60,9 @@ export default function FilmLayout({ children }: { children: React.ReactNode }) 
             <p className="mt-2 max-w-[50ch] text-paper-70">
               از یک تیزر ۱۵ثانیه‌ای تا کمپین کامل — بریف بدهید تا تریتمنت پیشنهادی ما را ببینید.
             </p>
-            <a
-              href={`mailto:${siteSettings.footer.email}`}
-              className="mt-6 inline-block bg-kodak px-8 py-3 font-bold text-ink transition-transform duration-[var(--duration-fast)] hover:-translate-y-px"
-              style={{ borderRadius: "var(--radius-control)" }}
-            >
+            <ButtonLink href={`mailto:${siteSettings.footer.email}`} size="lg" className="mt-6">
               بریف بدهید
-            </a>
+            </ButtonLink>
           </div>
           <div className="text-sm text-paper-70">
             <p>{siteSettings.footer.city}</p>

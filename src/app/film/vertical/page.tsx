@@ -1,4 +1,6 @@
-import MediaFrame from "@/components/media/MediaFrame";
+import WorkCard from "@/components/film/WorkCard";
+import { Tag } from "@/components/ui/Chip";
+import { ButtonLink } from "@/components/ui/Button";
 import { verticalReels, verticalPage } from "@/content/film";
 
 export const metadata = { title: "عمودی — تولید ۹:۱۶" };
@@ -26,36 +28,17 @@ export default function VerticalPage() {
       <section className="mx-auto max-w-7xl px-6 pb-24">
         <div className="grid grid-cols-2 gap-4 md:grid-cols-3 md:gap-8">
           {verticalReels.map((r, i) => (
-            <article
+            <div
               key={r.slug}
-              className="group reveal cursor-pointer"
               style={{ "--reveal-delay": `${i * 80}ms` } as React.CSSProperties}
-              data-cursor="play"
             >
-              <MediaFrame
-                src={r.poster}
-                alt={`ریل عمودی ${r.title}`}
-                aspect="9/16"
-                reveal="hover"
-                className="border border-border"
-                imgClassName="transition-transform duration-[var(--duration-slow)] ease-[var(--ease-out)] group-hover:scale-105"
-              />
-              <div className="mt-3 flex items-center justify-between">
-                <h3 className="font-bold">{r.title}</h3>
-                <span className="text-xs text-paper-40">{r.client}</span>
-              </div>
-            </article>
+              <WorkCard project={r} index={i} aspect="9/16" />
+            </div>
           ))}
         </div>
         <div className="mt-8 flex flex-wrap gap-2">
           {verticalPage.platforms.map((p) => (
-            <span
-              key={p}
-              className="border border-kodak/50 px-3 py-1 text-xs text-kodak"
-              style={{ borderRadius: "var(--radius-control)" }}
-            >
-              {p}
-            </span>
+            <Tag key={p}>{p}</Tag>
           ))}
         </div>
       </section>
@@ -69,13 +52,9 @@ export default function VerticalPage() {
 
       {/* ۰۴ — CTA */}
       <section className="mx-auto max-w-7xl px-6 py-20 text-center">
-        <a
-          href="/film#contact"
-          className="reveal inline-block bg-kodak px-10 py-4 text-lg font-bold text-ink transition-transform duration-[var(--duration-fast)] hover:-translate-y-px"
-          style={{ borderRadius: "var(--radius-control)" }}
-        >
+        <ButtonLink href="/film#contact" size="lg" className="reveal">
           بریف عمودی بدهید
-        </a>
+        </ButtonLink>
       </section>
     </>
   );
