@@ -1,0 +1,163 @@
+/* AVH design tokens — app copy of design-system/avh/tokens.css.
+   Brand core is LOCKED: ink / paper / kodak only. */
+
+@theme {
+  --color-ink:   #0A0A0A;
+  --color-paper: #F5F5F0;
+  --color-kodak: #FFB800;
+
+  --color-ink-90:  color-mix(in oklab, var(--color-ink) 90%, var(--color-paper));
+  --color-ink-80:  color-mix(in oklab, var(--color-ink) 80%, var(--color-paper));
+  --color-ink-60:  color-mix(in oklab, var(--color-ink) 60%, var(--color-paper));
+  --color-ink-30:  color-mix(in oklab, var(--color-ink) 30%, var(--color-paper));
+  --color-paper-90: color-mix(in oklab, var(--color-paper) 90%, var(--color-ink));
+  --color-paper-70: color-mix(in oklab, var(--color-paper) 70%, var(--color-ink));
+  --color-paper-40: color-mix(in oklab, var(--color-paper) 40%, var(--color-ink));
+  --color-kodak-press: color-mix(in oklab, var(--color-kodak) 94%, var(--color-ink));
+
+  --color-background:  var(--color-ink);
+  --color-foreground:  var(--color-paper);
+  --color-surface:     var(--color-ink-90);
+  --color-muted:       var(--color-paper-40);
+  --color-border:      color-mix(in oklab, var(--color-paper) 16%, transparent);
+  --color-border-paper: color-mix(in oklab, var(--color-ink) 14%, transparent);
+  --color-accent:      var(--color-kodak);
+  --color-ring:        var(--color-kodak);
+  --color-destructive: #D92D20; /* form errors only */
+
+  --font-fa:    var(--font-vazir), "YekanBakh", "IRANSansX", ui-sans-serif, system-ui, sans-serif;
+  --font-latin: "Neue Montreal", "Suisse Intl", var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-sans:  var(--font-fa);
+
+  --text-display:  clamp(2.5rem, 9vw, 10rem);
+  --text-h1:       clamp(2rem, 5vw, 4.5rem);
+  --text-h2:       clamp(1.5rem, 3.5vw, 3rem);
+  --text-h3:       clamp(1.25rem, 2.5vw, 2rem);
+  --text-lg:       1.25rem;
+  --text-base:     1rem;
+  --text-sm:       0.875rem;
+
+  --leading-fa:    1.8;
+  --leading-latin: 1.5;
+  --leading-display: 1.15;
+  --tracking-display-latin: -0.03em;
+
+  --spacing-2xs: 4px;
+  --spacing-xs:  8px;
+  --spacing-sm:  16px;
+  --spacing-md:  24px;
+  --spacing-lg:  48px;
+  --spacing-xl:  96px;
+  --spacing-2xl: 128px;
+  --spacing-3xl: 192px;
+
+  --radius-none:    0;
+  --radius-control: 2px;
+  --radius-glass:   24px;
+
+  --shadow-sm: 0 1px 2px rgb(10 10 10 / 0.05);
+  --shadow-md: 0 4px 6px rgb(10 10 10 / 0.10);
+  --shadow-lg: 0 10px 20px rgb(10 10 10 / 0.10);
+  --shadow-xl: 0 20px 40px rgb(10 10 10 / 0.15);
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in:  cubic-bezier(0.7, 0, 0.84, 0);
+  --duration-fast:      150ms;
+  --duration-base:      300ms;
+  --duration-slow:      600ms;
+  --duration-cinematic: 800ms;
+}
+
+:root {
+  --z-sticky: 10;
+  --z-nav: 20;
+  --z-overlay: 40;
+  --z-modal: 100;
+  --z-cursor: 1000;
+
+  --media-filter-rest: grayscale(1) contrast(1.05);
+  --media-filter-live: grayscale(0) contrast(1);
+  --media-reveal-duration: 600ms;
+
+  --grain-opacity: 0;
+  --glass-ink:   rgb(10 10 10 / 0.55);
+  --glass-blur:  40px;
+  --glass-saturate: 160%;
+  --scrim: rgb(10 10 10 / 0.6);
+
+  --cursor-size: 20px;
+}
+
+[data-layer="film"]     { --grain-opacity: 0.12; }
+[data-layer="film-bts"] { --grain-opacity: 0.15; }
+[data-layer="vvip"]     { --grain-opacity: 0.08; }
+[data-layer="factory"]  { --grain-opacity: 0.05; }
+
+html {
+  font-family: var(--font-sans);
+  color: var(--color-foreground);
+  background: var(--color-ink);
+  line-height: var(--leading-fa);
+}
+
+::selection { background: var(--color-kodak); color: var(--color-ink); }
+
+/* Media discipline: grayscale at rest, color on reveal */
+.media-rest {
+  filter: var(--media-filter-rest);
+  transition: filter var(--media-reveal-duration) var(--ease-out);
+}
+.media-rest:hover,
+.group:hover .media-rest,
+.media-rest.in-view { filter: var(--media-filter-live); }
+
+/* Grain overlay — one fixed layer per page */
+.grain::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 5;
+  pointer-events: none;
+  opacity: var(--grain-opacity);
+  background-image: url("/textures/grain.svg");
+  background-size: 256px 256px;
+}
+
+/* Scroll reveal primitives (IO adds .is-in) */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity var(--duration-slow) var(--ease-out),
+    transform var(--duration-slow) var(--ease-out);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+.reveal.is-in { opacity: 1; transform: none; }
+
+.glass {
+  background: var(--glass-ink);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  border-block-end: 1px solid var(--color-border);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-ring);
+  outline-offset: 2px;
+}
+
+.font-latin {
+  font-family: var(--font-latin);
+  line-height: var(--leading-latin);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .media-rest { filter: var(--media-filter-live); }
+  .reveal { opacity: 1; transform: none; }
+}
