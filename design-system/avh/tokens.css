@@ -1,0 +1,185 @@
+/* ============================================================
+   AVH — Design Tokens (single source of truth)
+   Tailwind v4 CSS-first. Import from src/app/globals.css:
+     @import "tailwindcss";
+     @import "../styles/tokens.css";
+   (On Tailwind v3, mirror the @theme block into tailwind.config.ts
+    theme.extend and keep :root as-is.)
+   ============================================================ */
+
+@theme {
+  /* ---- BRAND CORE — LOCKED. Never add a 4th hue. ---------- */
+  --color-ink:   #0A0A0A;   /* ~60% of surface */
+  --color-paper: #F5F5F0;   /* ~30% */
+  --color-kodak: #FFB800;   /* ≤10%: CTA, hover, indicators, hairlines.
+                               NEVER large backgrounds. NEVER text on paper. */
+
+  /* ---- Derived neutrals — tints of ink/paper only ---------- */
+  --color-ink-90:  color-mix(in oklab, var(--color-ink) 90%, var(--color-paper)); /* elevated ink surface */
+  --color-ink-80:  color-mix(in oklab, var(--color-ink) 80%, var(--color-paper)); /* card on ink */
+  --color-ink-60:  color-mix(in oklab, var(--color-ink) 60%, var(--color-paper)); /* muted fg on paper */
+  --color-ink-30:  color-mix(in oklab, var(--color-ink) 30%, var(--color-paper)); /* disabled on paper */
+  --color-paper-90: color-mix(in oklab, var(--color-paper) 90%, var(--color-ink)); /* recessed paper */
+  --color-paper-70: color-mix(in oklab, var(--color-paper) 70%, var(--color-ink)); /* secondary fg on ink */
+  --color-paper-40: color-mix(in oklab, var(--color-paper) 40%, var(--color-ink)); /* muted fg on ink (≥4.5:1) */
+  --color-kodak-press: color-mix(in oklab, var(--color-kodak) 94%, var(--color-ink)); /* CTA active */
+
+  /* ---- Semantic aliases (ink-first site) ------------------- */
+  --color-background:  var(--color-ink);
+  --color-foreground:  var(--color-paper);
+  --color-surface:     var(--color-ink-90);
+  --color-muted:       var(--color-paper-40);
+  --color-border:      color-mix(in oklab, var(--color-paper) 16%, transparent); /* hairlines on ink */
+  --color-border-paper: color-mix(in oklab, var(--color-ink) 14%, transparent);  /* hairlines on paper */
+  --color-accent:      var(--color-kodak);
+  --color-ring:        var(--color-kodak);
+  --color-destructive: #D92D20; /* FUNCTIONAL form errors ONLY — not a brand color */
+
+  /* ---- Typography — LOCKED families ------------------------ */
+  /* Self-hosted variable woff2 via next/font/local; these vars
+     receive the next/font CSS-variable output. */
+  --font-fa:    var(--font-yekan, "YekanBakh"), var(--font-iransansx, "IRANSansX"),
+                "Vazirmatn", ui-sans-serif, system-ui, sans-serif;
+  --font-latin: var(--font-grotesk, "Neue Montreal"), "Suisse Intl",
+                var(--font-inter, "Inter"), ui-sans-serif, system-ui, sans-serif;
+  --font-sans:  var(--font-fa); /* fa-IR default; EN mirror flips to --font-latin */
+
+  /* Type scale — Exaggerated Minimalism (display) → editorial (body) */
+  --text-display:  clamp(2.5rem, 9vw, 10rem);     /* statement heads */
+  --text-h1:       clamp(2rem, 5vw, 4.5rem);
+  --text-h2:       clamp(1.5rem, 3.5vw, 3rem);
+  --text-h3:       clamp(1.25rem, 2.5vw, 2rem);
+  --text-lg:       1.25rem;
+  --text-base:     1rem;                           /* 16px floor — never below */
+  --text-sm:       0.875rem;                       /* captions/meta only */
+
+  --leading-fa:    1.8;   /* Persian body */
+  --leading-latin: 1.5;
+  --leading-display: 1.05;
+  --tracking-display-latin: -0.03em; /* Latin display only — NEVER on Persian */
+
+  /* ---- Spacing (spacious marketing density) ---------------- */
+  --spacing-2xs: 4px;
+  --spacing-xs:  8px;
+  --spacing-sm:  16px;
+  --spacing-md:  24px;
+  --spacing-lg:  48px;
+  --spacing-xl:  96px;
+  --spacing-2xl: 128px;
+  --spacing-3xl: 192px;
+
+  /* ---- Radius ---------------------------------------------- */
+  --radius-none:    0;      /* Film surfaces, editorial frames */
+  --radius-control: 2px;    /* buttons, inputs, chips — sitewide */
+  --radius-glass:   24px;   /* Factory glass panels only */
+
+  /* ---- Elevation (paper surfaces; hairlines on ink) -------- */
+  --shadow-sm: 0 1px 2px rgb(10 10 10 / 0.05);
+  --shadow-md: 0 4px 6px rgb(10 10 10 / 0.10);
+  --shadow-lg: 0 10px 20px rgb(10 10 10 / 0.10);
+  --shadow-xl: 0 20px 40px rgb(10 10 10 / 0.15);
+
+  /* ---- Motion ---------------------------------------------- */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);   /* expo-out — enters */
+  --ease-in:  cubic-bezier(0.7, 0, 0.84, 0);   /* exits */
+  --duration-fast:      150ms;  /* micro-interactions */
+  --duration-base:      300ms;  /* hovers, reveals */
+  --duration-slow:      600ms;  /* media color reveal */
+  --duration-cinematic: 800ms;  /* hero statements only */
+}
+
+/* ============================================================
+   Non-Tailwind runtime tokens + base layer
+   ============================================================ */
+:root {
+  /* Z-index scale */
+  --z-sticky: 10;
+  --z-nav: 20;
+  --z-overlay: 40;
+  --z-modal: 100;
+  --z-cursor: 1000;
+
+  /* Media discipline — grayscale at rest, color on reveal */
+  --media-filter-rest: grayscale(1) contrast(1.05);
+  --media-filter-live: grayscale(0) contrast(1);
+  --media-reveal-duration: var(--duration-slow);
+
+  /* Film layer (per-page override via [data-layer="film"]) */
+  --grain-opacity: 0;               /* master default: off */
+  --lightleak-color: rgb(255 184 0 / 0.12); /* kodak-warm, transitions only */
+
+  /* Factory layer — glass (chrome/panels only, never body text surfaces) */
+  --glass-ink:   rgb(10 10 10 / 0.55);
+  --glass-paper: rgb(245 245 240 / 0.65);
+  --glass-blur:  40px;
+  --glass-saturate: 160%;
+
+  /* Interactive cursor (pointer-fine only) */
+  --cursor-size: 20px;
+  --cursor-hover-scale: 1.5;
+  --magnetic-distance: 100px;
+
+  /* Scrim */
+  --scrim: rgb(10 10 10 / 0.6);
+}
+
+/* Layer dials — set on <body> or route-group layout wrapper */
+[data-layer="film"]    { --grain-opacity: 0.12; }
+[data-layer="film-bts"]{ --grain-opacity: 0.15; }
+[data-layer="vvip"]    { --grain-opacity: 0.08; }
+[data-layer="factory"] { --grain-opacity: 0.05; }
+
+/* Base */
+html {
+  font-family: var(--font-sans);
+  color: var(--color-foreground);
+  background: var(--color-background);
+}
+html[lang="fa"] { direction: rtl; line-height: var(--leading-fa); }
+html[lang="en"] { direction: ltr; line-height: var(--leading-latin); font-family: var(--font-latin); }
+
+/* Media discipline utilities */
+.media-rest {
+  filter: var(--media-filter-rest);
+  transition: filter var(--media-reveal-duration) var(--ease-out);
+}
+.media-rest:hover,
+.media-rest.in-view { filter: var(--media-filter-live); }
+
+/* Glass panel (Factory chrome only) */
+.glass {
+  background: var(--glass-ink);
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate));
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-glass);
+}
+
+/* Grain overlay (one fixed layer per page, pointer-events none) */
+.grain::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: var(--grain-opacity);
+  background-image: url("/textures/grain.svg"); /* SVG feTurbulence tile */
+  background-size: 256px 256px;
+}
+
+/* Focus — kodak ring, always visible */
+:focus-visible {
+  outline: 2px solid var(--color-ring);
+  outline-offset: 2px;
+}
+
+/* Reduced motion — global kill switch (GSAP side uses gsap.matchMedia) */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .media-rest { filter: var(--media-filter-live); } /* show color immediately */
+}
