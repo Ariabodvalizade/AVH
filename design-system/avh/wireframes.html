@@ -1,0 +1,816 @@
+<title>AVH — وایرفریم UX (کم‌جزئیات)</title>
+<style>
+  :root {
+    --bg: #ECECE8;
+    --fg: #1C1C1A;
+    --muted: #6E6E66;
+    --sheet: #FFFFFF;
+    --wire: #A3A39B;
+    --wire-soft: #C9C9C1;
+    --block: #FAFAF7;
+    --ink-chip-bg: #2A2A28;
+    --ink-chip-fg: #F5F5F0;
+    --paper-chip-bg: #F0F0E9;
+    --paper-chip-fg: #4A4A44;
+    --motion-bg: #FFF3D6;
+    --motion-fg: #7A5A00;
+    --motion-br: #E3B94E;
+    --cms-bg: #E7EEF4;
+    --cms-fg: #33566E;
+    --cms-br: #9FB8C9;
+    --hatch: repeating-linear-gradient(45deg, transparent 0 9px, #DEDED6 9px 10px);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #161614; --fg: #E8E8E2; --muted: #92928A; }
+  }
+  :root[data-theme="dark"] { --bg: #161614; --fg: #E8E8E2; --muted: #92928A; }
+  :root[data-theme="light"] { --bg: #ECECE8; --fg: #1C1C1A; --muted: #6E6E66; }
+
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: ui-sans-serif, system-ui, "Segoe UI", Tahoma, sans-serif;
+    line-height: 1.7;
+    padding: 40px 20px 80px;
+  }
+  .doc { max-width: 1020px; margin: 0 auto; }
+
+  /* ---------- document header ---------- */
+  header.doc-head { direction: rtl; margin-bottom: 28px; }
+  .eyebrow {
+    direction: ltr; text-align: right;
+    font-family: ui-monospace, "SF Mono", Consolas, monospace;
+    font-size: 11px; letter-spacing: .14em; text-transform: uppercase;
+    color: var(--muted); margin-bottom: 6px;
+  }
+  h1 { font-size: 30px; font-weight: 800; margin: 0 0 8px; text-wrap: balance; }
+  .doc-head p.lede { color: var(--muted); font-size: 14.5px; max-width: 60ch; margin: 0; }
+
+  .legend {
+    direction: rtl; display: flex; flex-wrap: wrap; gap: 10px;
+    margin: 20px 0 10px; align-items: center; font-size: 12px;
+  }
+  .legend .item { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); }
+  .swatch { width: 26px; height: 16px; border: 1.5px dashed var(--wire); border-radius: 3px; background: var(--sheet); flex: none; }
+  .swatch.hatch { background: var(--sheet) var(--hatch); border-style: solid; border-width: 1px; }
+
+  nav.toc { direction: rtl; display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0 34px; }
+  nav.toc a {
+    font-size: 12.5px; text-decoration: none; color: var(--fg);
+    border: 1px solid var(--wire); border-radius: 999px; padding: 4px 12px;
+    background: var(--sheet);
+  }
+  nav.toc a:hover, nav.toc a:focus-visible { border-color: var(--motion-br); outline: none; }
+  nav.toc a:focus-visible { box-shadow: 0 0 0 2px var(--motion-br); }
+
+  /* ---------- chips ---------- */
+  .chip {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-size: 10.5px; line-height: 1; padding: 4px 7px;
+    border-radius: 3px; border: 1px solid; white-space: nowrap;
+  }
+  .chip.m { background: var(--motion-bg); color: var(--motion-fg); border-color: var(--motion-br); }
+  .chip.c {
+    background: var(--cms-bg); color: var(--cms-fg); border-color: var(--cms-br);
+    font-family: ui-monospace, "SF Mono", Consolas, monospace; direction: ltr;
+  }
+  .chip.srf-ink { background: var(--ink-chip-bg); color: var(--ink-chip-fg); border-color: var(--ink-chip-bg); }
+  .chip.srf-paper { background: var(--paper-chip-bg); color: var(--paper-chip-fg); border-color: var(--wire-soft); }
+  .chip.note { background: transparent; color: var(--muted); border-color: var(--wire-soft); }
+
+  /* ---------- sheets (page frames) ---------- */
+  section.sheet {
+    background: var(--sheet); color: #1C1C1A;
+    border: 1px solid var(--wire-soft); border-radius: 6px;
+    padding: 22px 22px 26px; margin-bottom: 44px;
+    box-shadow: 0 8px 24px rgb(20 20 18 / .07);
+  }
+  .sheet-head { direction: rtl; border-bottom: 1px solid var(--wire-soft); padding-bottom: 12px; margin-bottom: 16px; }
+  .sheet-head .route {
+    direction: ltr; float: left;
+    font-family: ui-monospace, "SF Mono", Consolas, monospace;
+    font-size: 12px; color: var(--cms-fg);
+    background: var(--cms-bg); border: 1px solid var(--cms-br);
+    padding: 3px 8px; border-radius: 3px;
+  }
+  .sheet-head h2 { font-size: 20px; font-weight: 800; margin: 0 0 4px; }
+  .sheet-head .sub { font-size: 12.5px; color: #6E6E66; }
+  .sheet-head .flags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 10px; }
+
+  .frame { direction: rtl; border: 1.5px solid var(--wire); border-radius: 4px; padding: 12px; background: var(--block); }
+  .frame + .frame { margin-top: 14px; }
+  .frame-label {
+    direction: rtl; font-size: 11.5px; color: #6E6E66; margin: 16px 0 6px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .frame-label::after { content: ""; flex: 1; border-top: 1px dashed var(--wire-soft); }
+
+  /* section (numbered hierarchy) */
+  .sec { border: 1.5px dashed var(--wire); border-radius: 4px; background: var(--sheet); padding: 10px 12px 12px; }
+  .sec + .sec, .fold + .sec, .sec + .fold { margin-top: 10px; }
+  .sec-head { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+  .sec-num {
+    font-weight: 800; font-size: 12px; color: #1C1C1A;
+    border: 1px solid #1C1C1A; border-radius: 2px; padding: 1px 6px;
+    font-variant-numeric: tabular-nums;
+  }
+  .sec-title { font-weight: 700; font-size: 14px; }
+  .sec-desc { font-size: 12px; color: #55554F; margin-top: 4px; max-width: 70ch; }
+  .meta { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 9px; }
+
+  /* inner blocks */
+  .row { display: grid; gap: 8px; margin-top: 10px; }
+  .cols-2 { grid-template-columns: 1fr 1fr; }
+  .cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+  .cols-4 { grid-template-columns: repeat(4, 1fr); }
+  .cols-6 { grid-template-columns: repeat(6, 1fr); }
+  .cols-2-1 { grid-template-columns: 2fr 1fr; }
+  .cols-1-2 { grid-template-columns: 1fr 2fr; }
+  .b {
+    border: 1px dashed var(--wire); border-radius: 3px;
+    padding: 8px 9px; font-size: 11.5px; color: #3B3B36; background: var(--sheet);
+    min-height: 34px;
+  }
+  .b .t { font-weight: 700; font-size: 11.5px; display: block; }
+  .b .s { color: #77776E; font-size: 10.5px; }
+  .media { background: var(--sheet) var(--hatch); border-style: solid; display: grid; place-items: center; text-align: center; }
+  .media .t { background: var(--sheet); padding: 2px 8px; border-radius: 2px; font-weight: 700; }
+  .h-lg { min-height: 150px; } .h-xl { min-height: 210px; } .h-md { min-height: 90px; } .h-sm { min-height: 56px; }
+  .center { display: grid; place-items: center; text-align: center; }
+  .statement { font-weight: 800; font-size: 17px; letter-spacing: 0; }
+  .kbtn { display: inline-block; border: 2px solid #B98A00; border-radius: 2px; padding: 4px 14px; font-weight: 700; font-size: 11.5px; background: var(--motion-bg); }
+  .hair { border: none; border-top: 2px solid var(--motion-br); margin: 6px 0; }
+
+  /* nav bar block */
+  .navbar { display: flex; gap: 8px; align-items: stretch; }
+  .navbar .logo { flex: 0 0 130px; }
+  .navbar .links { flex: 1; }
+  .navbar .cta { flex: 0 0 120px; }
+
+  /* fold marker */
+  .fold {
+    direction: rtl; display: flex; align-items: center; gap: 10px;
+    color: #98988E; font-size: 10.5px;
+  }
+  .fold::before, .fold::after { content: ""; flex: 1; border-top: 2px dashed var(--wire-soft); }
+
+  /* phone frames (9:16) */
+  .phones { display: grid; grid-template-columns: repeat(3, 150px); gap: 14px; justify-content: center; margin-top: 10px; }
+  .phone { aspect-ratio: 9 / 16; border: 2px solid var(--wire); border-radius: 10px; background: var(--sheet) var(--hatch); display: grid; place-items: center; padding: 6px; }
+  .phone .t { background: var(--sheet); padding: 2px 6px; font-size: 10.5px; font-weight: 700; border-radius: 2px; }
+
+  /* polaroids */
+  .polaroids { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 10px; }
+  .polaroid { background: var(--sheet); border: 1px solid var(--wire-soft); padding: 8px 8px 22px; box-shadow: 0 3px 8px rgb(20 20 18 / .08); }
+  .polaroid .ph { height: 84px; background: var(--sheet) var(--hatch); border: 1px solid var(--wire-soft); }
+  .polaroid .cap { font-size: 10px; color: #77776E; margin-top: 6px; }
+  .tilt-l { transform: rotate(-2deg); } .tilt-r { transform: rotate(2deg); }
+
+  /* numbered editorial list (vvip) */
+  .edlist { margin-top: 10px; display: grid; gap: 8px; }
+  .edrow { display: grid; grid-template-columns: 44px 1fr; gap: 10px; align-items: start; border-bottom: 1px dashed var(--wire-soft); padding-bottom: 8px; }
+  .ednum { font-weight: 800; font-size: 16px; color: #B98A00; font-variant-numeric: tabular-nums; }
+
+  /* timeline (about) */
+  .timeline { display: grid; grid-template-columns: 20px 1fr; gap: 0 12px; margin-top: 10px; }
+  .tl-rail { grid-row: 1 / span 8; border-inline-start: 3px solid var(--motion-br); margin-inline-start: 8px; }
+  .tl-item { border: 1.5px dashed var(--wire); border-radius: 4px; background: var(--sheet); padding: 9px 11px; margin-bottom: 8px; }
+  .tl-era { font-family: ui-monospace, Consolas, monospace; direction: ltr; display: inline-block; font-size: 10px; letter-spacing: .1em; text-transform: uppercase; color: #77776E; border: 1px solid var(--wire-soft); padding: 1px 6px; border-radius: 2px; }
+
+  .form-rows { display: grid; gap: 6px; margin-top: 8px; }
+  .form-rows .b { min-height: 30px; }
+
+  .foot-note { direction: rtl; color: var(--muted); font-size: 12px; margin-top: 8px; }
+
+  @media (max-width: 760px) {
+    .cols-3, .cols-4, .cols-6, .cols-2, .cols-2-1, .cols-1-2 { grid-template-columns: 1fr 1fr; }
+    .phones { grid-template-columns: repeat(2, 140px); }
+    .polaroids { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+
+<div class="doc">
+  <header class="doc-head">
+    <div class="eyebrow">AVH · UX WIREFRAMES · LOW-FIDELITY · RTL · DESKTOP-FIRST 1440</div>
+    <h1>وایرفریم‌های کم‌جزئیات — هشت صفحه</h1>
+    <p class="lede">
+      چیدمان فارسی راست‌به‌چپ، دسکتاپ‌اول (قاب ۱۴۴۰). هر برگه: سلسله‌مراتب بخش‌ها (۰۱، ۰۲، …)،
+      بلوک‌های محتوا، یادداشت‌های حرکت، و نگاشت منبع داده در Payload CMS.
+      مرجع قواعد: <span dir="ltr" style="font-family:ui-monospace,monospace;font-size:12px">design-system/avh/MASTER.md + pages/*.md</span>
+    </p>
+    <div class="legend">
+      <span class="item"><span class="swatch"></span> بلوک محتوا</span>
+      <span class="item"><span class="swatch hatch"></span> جای‌نگهدار مدیا (پیش‌فرض: سیاه‌وسفید)</span>
+      <span class="item"><span class="chip m">MOTION</span> یادداشت حرکت</span>
+      <span class="item"><span class="chip c">cms.path</span> منبع داده</span>
+      <span class="item"><span class="chip srf-ink">INK</span><span class="chip srf-paper">PAPER</span> سطح</span>
+    </div>
+    <nav class="toc" aria-label="فهرست صفحه‌ها">
+      <a href="#film-home">خانه فیلم</a>
+      <a href="#vertical">عمودی</a>
+      <a href="#bts">پشت صحنه</a>
+      <a href="#vvip">VVIP</a>
+      <a href="#glasses">عینک</a>
+      <a href="#ar-catalog">کاتالوگ AR</a>
+      <a href="#about">درباره</a>
+      <a href="#blog">بلاگ</a>
+    </nav>
+  </header>
+
+  <!-- ============================================================ FILM HOME -->
+  <section class="sheet" id="film-home">
+    <div class="sheet-head">
+      <span class="route">/film</span>
+      <h2>خانهٔ فیلم — AVH FILM</h2>
+      <div class="sub">لایه: فیلم (آنالوگ قدیمی روی مینیمالیسم اغراق‌شده) · الگو: گرید نمونه‌کار</div>
+      <div class="flags">
+        <span class="chip note">گرین ۰٫۱۲</span>
+        <span class="chip note">بودجهٔ کداک: CTA، شماره‌ها، ایندیکیتور صدا</span>
+        <span class="chip m">Lenis + ScrollTrigger در کل صفحه</span>
+      </div>
+    </div>
+    <div class="frame">
+      <div class="sec">
+        <div class="sec-head"><span class="sec-num">۰۰</span><span class="sec-title">نوار ناوبری</span><span class="chip srf-ink">INK</span></div>
+        <div class="row navbar">
+          <div class="b logo"><span class="t">لوگو AVH FILM</span><span class="s">ابتدای سطر (راست)</span></div>
+          <div class="b links"><span class="t">کارها · عمودی · پشت صحنه · VVIP · درباره · بلاگ</span></div>
+          <div class="b cta"><span class="kbtn">تماس</span></div>
+        </div>
+        <div class="meta"><span class="chip c">siteSettings.filmNav</span></div>
+      </div>
+
+      <div class="sec">
+        <div class="sec-head"><span class="sec-num">۰۱</span><span class="sec-title">هیروی نمایشریل</span><span class="chip srf-ink">INK</span></div>
+        <p class="sec-desc">ویدیوی تمام‌قاب، وردمارک در مرکز با تایپ نمایشی، دکمهٔ صدا، نشانهٔ اسکرول پایین.</p>
+        <div class="row">
+          <div class="b media h-xl"><span class="t">نمایشریل — لوپ بی‌صدا، سیاه‌وسفید<br>وردمارک «آوای هنر هفتم» در مرکز</span></div>
+        </div>
+        <div class="row cols-2">
+          <div class="b"><span class="t">دکمهٔ صدا</span><span class="s">ایندیکیتور کداک</span></div>
+          <div class="b"><span class="t">نشانهٔ اسکرول</span><span class="s">پیکان + خط مو</span></div>
+        </div>
+        <div class="meta">
+          <span class="chip m">reveal وردمارک ۸۰۰ms</span>
+          <span class="chip m">پوستر اجباری — CLS صفر</span>
+          <span class="chip c">filmHome.showreel</span>
+          <span class="chip c">filmHome.headline</span>
+        </div>
+      </div>
+
+      <div class="fold">خطِ تا — ۱۴۴۰×۹۰۰</div>
+
+      <div class="sec">
+        <div class="sec-head"><span class="sec-num">۰۲</span><span class="sec-title">کارهای منتخب</span><span class="chip srf-ink">INK</span></div>
+        <p class="sec-desc">گرید سردبیریِ ناهم‌تراز؛ حداکثر یک اسکرول از بالای صفحه. فیلتر بدون پرش به بالا.</p>
+        <div class="row cols-4">
+          <div class="b h-sm center">همه</div><div class="b h-sm center">فیلم</div><div class="b h-sm center">CGI</div><div class="b h-sm center">موشن سه‌بعدی</div>
+        </div>
+        <div class="row cols-3">
+          <div class="b media h-lg"><span class="t">پروژه ۰۱</span></div>
+          <div class="b media h-md"><span class="t">پروژه ۰۲</span></div>
+          <div class="b media h-xl"><span class="t">پروژه ۰۳</span></div>
+          <div class="b media h-md"><span class="t">پروژه ۰۴</span></div>
+          <div class="b media h-lg"><span class="t">پروژه ۰۵</span></div>
+          <div class="b media h-md"><span class="t">پروژه ۰۶</span></div>
+        </div>
+        <div class="meta">
+          <span class="chip m">stagger ورود ۴۰ms/کارت</span>
+          <span class="chip m">hover: رنگ + زومِ داخل قاب</span>
+          <span class="chip m">کرسر → حلقهٔ «پخش» (فقط pointer-fine)</span>
+          <span class="chip c">filmHome.featuredProjects → projects</span>
+          <span class="chip c">Link scroll={false}</span>
+        </div>
+      </div>
+
+      <div class="sec">
+        <div class="sec-head"><span class="sec-num">۰۳</span><span class="sec-title">خدمات</span><span class="chip srf-ink">INK</span></div>
+        <div class="row cols-3">
+          <div class="b h-md"><span class="t">فیلم تبلیغاتی</span><span class="s">شرح کوتاه + آیکن SVG</span></div>
+          <div class="b h-md"><span class="t">CGI</span><span class="s">شرح کوتاه</span></div>
+          <div class="b h-md"><span class="t">موشن سه‌بعدی</span><span class="s">شرح کوتاه</span></div>
+        </div>
+        <div class="meta"><span class="chip c">filmHome.services[]</span></div>
+      </div>
+
+      <div class="sec">
+        <div class="sec-head"><span class="sec-num">۰۴</span><span class="sec-title">مشتریان</span><span class="chip srf-ink">INK</span></div>
+        <div class="row cols-6">
+          <div class="b h-sm center">لوگو</div><div class="b h-sm center">لوگو</div><div class="b h-sm center">لوگو</div>
+          <div class="b h-sm center">لوگو</div><div class="b h-sm center">لوگو</div><div class="b h-sm center">لوگو</div>
+        </div>
+        <div class="meta"><span class="chip m">لوگو سیاه‌وسفید → رنگ در hover</span><span class="chip c">filmHome.clients → clients</span></div>
+      </div>
+
+      <div class="sec">
+        <div class="sec-head"><span class="sec-num">۰۵</span><span class="sec-title">فلسفه / تیزر درباره</span><span class="chip srf-paper">PAPER</span></div>
+        <div class="row"><div class="b h-md center statement">«از تاریکخانهٔ کداک تا رایانش فضایی» + پیوند به «درباره»</div></div>
+        <div class="meta"><span class="chip m">گذار مقطعی light-leak ≤۰٫۱۵ (فقط بین سکشن‌ها)</span><span class="chip c">filmHome.philosophyTeaser</span></div>
+      </div>
+
+      <div class="sec">
+        <div class="sec-head"><span class="sec-num">۰۶</span><span class="sec-title">تماس / فوتر</span><span class="chip srf-ink">INK</span></div>
+        <div class="row cols-2-1">
+          <div class="b h-sm"><span class="t">نشانی، تلفن، ایمیل، شبکه‌ها</span></div>
+          <div class="b h-sm center"><span class="kbtn">بریف بدهید</span></div>
+        </div>
+        <div class="meta"><span class="chip c">siteSettings.footer</span><span class="chip c">filmHome.contactCta</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ VERTICAL -->
+  <section class="sheet" id="vertical">
+    <div class="sheet-head">
+      <span class="route">/film/vertical</span>
+      <h2>عمودی — تولید ۹:۱۶</h2>
+      <div class="sub">لایه: فیلم · دادهٔ صفحه از پروژه‌ها با فرمت «عمودی» — کالکشن جدا ندارد</div>
+      <div class="flags"><span class="chip note">گرین ۰٫۱۲</span><span class="chip note">کداک: ایندیکیتور کارت فعال + برچسب پلتفرم</span></div>
+    </div>
+    <div class="frame">
+      <div class="sec">
+        <div class="sec-head"><span class="sec-num">۰۰</span><span class="sec-title">نوار ناوبری</span><span class="chip srf-ink">INK</span></div>
+        <div class="meta"><span class="chip c">siteSettings.filmNav</span></div>
+      </div>
+      <div class="sec">
+        <div class="sec-head"><span class="sec-num">۰۱</span><span class="sec-title">هیروی بیانیه</span><span class="chip srf-ink">INK</span></div>
+        <div class="row"><div class="b h-md center statement">یک سطر نمایشی فارسی + معرفی کوتاه</div></div>
+        <div class="meta"><span class="chip c">verticalPage.headline</span><span class="chip c">verticalPage.intro</span></div>
+      </div>
+
+      <div class="fold">خطِ تا — ۱۴۴۰×۹۰۰</div>
+
+      <div class="sec">
+        <div class="sec-head"><span class="sec-num">۰۲</span><span class="sec-title">گرید ریل‌ها</span><span class="chip srf-ink">INK</span></div>
+        <p class="sec-desc">قاب‌های موبایلی با نسبت دقیق ۹:۱۶ — دسکتاپ ۳تایی. کلیک: پخش‌کنندهٔ تمام‌ارتفاع در مودال مشکی.</p>
+        <div class="phones">
+          <div class="phone"><span class="t">ریل ۰۱ + برچسب پلتفرم</span></div>
+          <div class="phone"><span class="t">ریل ۰۲</span></div>
+          <div class="phone"><span class="t">ریل ۰۳</span></div>
+        </div>
+        <div class="meta">
+          <span class="chip m">پیش‌نمایش in-view ≤۶s، بی‌صدا</span>
+          <span class="chip m">حداکثر ۲ پخش هم‌زمان — IO توقف خارج از دید</span>
+          <span class="chip m">موبایل: تنها کاروسل snap مجاز (۱٫۲ کارت)</span>
+          <span class="chip c">verticalPage.reels → projects(format=vertical)</span>
+        </div>
+      </div>
+
+      <div class="sec">
+        <div class="sec-head"><span class="sec-num">۰۳</span><span class="sec-title">یادداشت فرایند</span><span class="chip srf-paper">PAPER</span></div>
+        <div class="row"><div class="b h-sm">از ایده تا انتشار در پلتفرم‌ها — یک بند کوتاه</div></div>
+        <div class="meta"><span class="chip c">verticalPage.processNote</span></div>
+      </div>
+      <div class="sec">
+        <div class="sec-head"><span class="sec-num">۰۴</span><span class="sec-title">CTA بریف</span><span class="chip srf-ink">INK</span></div>
+        <div class="row"><div class="b h-sm center"><span class="kbtn">بریف عمودی بدهید</span></div></div>
+        <div class="meta"><span class="chip c">→ inquiries(type=vertical)</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ BTS -->
+  <section class="sheet" id="bts">
+    <div class="sheet-head">
+      <span class="route">/film/bts</span>
+      <h2>پشت صحنه — جستارهای عکاسی</h2>
+      <div class="sub">لایه: فیلم، آنالوگ در بیشینه — صفحه باید «چاپ‌شده» حس شود، نه انیمیت‌شده</div>
+      <div class="flags">
+        <span class="chip note">گرین ۰٫۱۵ (بیشینهٔ سایت)</span>
+        <span class="chip note">مونوکرومِ گرم (sepia ۰٫۲۵) — رنگ فقط با reveal</span>
+      </div>
+    </div>
+    <div class="frame">
+      <div class="sec">
+        <div class="sec-head"><span class="sec-num">۰۱</span><span class="sec-title">مانیفست تاریکخانه</span><span class="chip srf-paper">PAPER</span></div>
+        <div class="row"><div class="b h-md center statement">یک بند دربارهٔ کارِ دست و نور و انتظار</div></div>
+        <div class="meta"><span class="chip c">btsPage.manifesto</span></div>
+      </div>
+
+      <div class="fold">خطِ تا — ۱۴۴۰×۹۰۰</div>
+
+      <div class="sec">
+        <div class="sec-head"><span class="sec-num">۰۲</span><span class="sec-title">جستار ۱ — به تفکیک پروژه</span><span class="chip srf-ink">INK</span></div>
+        <div class="row"><div class="b media h-lg"><span class="t">قاب تمام‌عرض — پلان پشت صحنه</span></div></div>
+        <div class="polaroids">
+          <div class="polaroid tilt-l"><div class="ph"></div><div class="cap">کپشن کوتاه — قاب کاغذی پولاروید</div></div>
+          <div class="polaroid tilt-r"><div class="ph"></div><div class="cap">چرخش ایستا ±۲° — بدون لرزش</div></div>
+          <div class="polaroid tilt-l"><div class="ph"></div><div class="cap">کپشن</div></div>
+        </div>
+        <div class="row"><div class="b h-sm"><span class="t">پیوند به پروژهٔ مادر ←</span><span class="s">پیکان کداک</span></div></div>
+        <div class="meta">
+          <span class="chip m">fade آرام ۶۰۰ms</span>
+          <span class="chip m">پارالاکس ≤۲ لایه، بسیار ملایم</span>
+          <span class="chip c">projects.bts.items[]</span>
+          <span class="chip c">projects.bts.intro</span>
+        </div>
+      </div>
+
+      <div class="sec">
+        <div class="sec-head"><span class="sec-num">۰۳</span><span class="sec-title">جداکنندهٔ نوار فیلم</span></div>
+        <div class="row"><div class="b h-sm center"><span class="s">موتیف پرفراژ — خطوط موی مشکی + کداک (ایستا)</span></div></div>
+      </div>
+
+      <div class="sec">
+        <div class="sec-head"><span class="sec-num">۰۴</span><span class="sec-title">جستار ۲، ۳، …</span><span class="chip srf-ink">INK</span></div>
+        <div class="row cols-2">
+          <div class="b media h-md"><span class="t">ردیف مهارشده</span></div>
+          <div class="b h-md"><span class="t">متن روایت + کپشن‌ها</span><span class="s">فاصله‌گذاری --space-3xl</span></div>
+        </div>
+        <div class="meta"><span class="chip c">btsPage.featuredEssays → projects(bts.enabled)</span></div>
+      </div>
+
+      <div class="sec">
+        <div class="sec-head"><span class="sec-num">۰۵</span><span class="sec-title">CTA</span><span class="chip srf-ink">INK</span></div>
+        <div class="row"><div class="b h-sm center"><span class="kbtn">فیلم‌های نهایی را ببینید ← /film</span></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ VVIP -->
+  <section class="sheet" id="vvip">
+    <div class="sheet-head">
+      <span class="route">/film/vvip</span>
+      <h2>VVIP — تولید ممتاز</h2>
+      <div class="sub">ساکت‌ترین صفحهٔ سایت — یک گزاره در هر ویوپورت؛ خویشتن‌داری، خودِ نشانهٔ لوکس است</div>
+      <div class="flags">
+        <span class="chip note">گرین ۰٫۰۸</span>
+        <span class="chip note">دقیقاً ۳ لحظهٔ کداک: خط موی وردمارک، یک تأکید متن، CTA</span>
+        <span class="chip note">بدون قیمت، بدون گرید کارت</span>
+      </div>
+    </div>
+    <div class="frame">
+      <div class="sec">
+        <div class="sec-head"><span class="sec-num">۰۱</span><span class="sec-title">مانیفست</span><span class="chip srf-ink">INK</span></div>
+        <div class="row"><div class="b h-xl center statement">یک سطر نمایشی + یک بند کوتاه<br><span class="s">سفیدخوانی عظیم — بیشتر قاب خالی است، عمداً</span></div></div>
+        <div class="meta"><span class="chip m">reveal سینمایی ۸۰۰ms — تنها حرکت بزرگ صفحه</span><span class="chip c">vvipPage.manifesto</span></div>
+      </div>
+
+      <div class="fold">خطِ تا — ۱۴۴۰×۹۰۰</div>
+
+      <div class="sec">
+        <div class="sec-head"><span class="sec-num">۰۲</span><span class="sec-title">خدمات ویژه — فهرست سردبیری شماره‌دار</span><span class="chip srf-ink">INK</span></div>
+        <div class="edlist">
+          <div class="edrow"><span class="ednum">۱</span><div class="b"><span class="t">فیلم تبلیغاتی با کارگردان</span><span class="s">شرح + اقلام تحویل</span></div></div>
+          <div class="edrow"><span class="ednum">۲</span><div class="b"><span class="t">CGI کامل</span><span class="s">شرح + اقلام تحویل</span></div></div>
+          <div class="edrow"><span class="ednum">۳</span><div class="b"><span class="t">فیلم لانچ محصول</span><span class="s">شرح + اقلام تحویل</span></div></div>
+        </div>
+        <div class="meta"><span class="chip c">vvipPage.offerings[]</span></div>
+      </div>
+
+      <div class="sec">
+        <div class="sec-head"><span class="sec-num">۰۳</span><span class="sec-title">فرایند — سه گام آرام</span><span class="chip srf-ink">INK</span></div>
+        <div class="row cols-3">
+          <div class="b h-sm">گفت‌وگو</div><div class="b h-sm">تریتمنت</div><div class="b h-sm">تولید و تحویل</div>
+        </div>
+        <div class="meta"><span class="chip c">vvipPage.process[]</span></div>
+      </div>
+
+      <div class="sec">
+        <div class="sec-head"><span class="sec-num">۰۴</span><span class="sec-title">مراجع منتخب</span><span class="chip srf-ink">INK</span></div>
+        <p class="sec-desc">حداکثر ۳ پروژه — بزرگ‌ترین ارائهٔ مدیا در کل سایت.</p>
+        <div class="row"><div class="b media h-xl"><span class="t">مرجع ۰۱ — تمام‌عرض</span></div></div>
+        <div class="row"><div class="b media h-lg"><span class="t">مرجع ۰۲</span></div></div>
+        <div class="meta"><span class="chip c">vvipPage.references → projects (max 3)</span></div>
+      </div>
+
+      <div class="sec">
+        <div class="sec-head"><span class="sec-num">۰۵</span><span class="sec-title">فرم درخواست خصوصی</span><span class="chip srf-paper">PAPER</span></div>
+        <div class="form-rows">
+          <div class="b">نام و نام خانوادگی *</div>
+          <div class="b">شرکت / برند</div>
+          <div class="b">راه تماس *</div>
+          <div class="b h-md">شرح پروژه</div>
+          <div class="b">بازهٔ بودجه (اختیاری — سلکت)</div>
+          <div class="b center"><span class="kbtn">ارسال درخواست</span></div>
+        </div>
+        <div class="meta">
+          <span class="chip m">لیبل بالای فیلد، خطا زیر فیلد، فوکوس‌رینگ کداک</span>
+          <span class="chip c">→ inquiries(type=vvip, priority=high)</span>
+        </div>
+        <p class="foot-note">اکران‌های خصوصی: <span dir="ltr" style="font-family:ui-monospace,monospace;font-size:11px">/film/vvip/s/[token]</span> — لینک‌دار نشده در ناوبری، noindex، URL امضاشدهٔ Stream.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ GLASSES -->
+  <section class="sheet" id="glasses">
+    <div class="sheet-head">
+      <span class="route">/factory/glasses</span>
+      <h2>عینک — لانچ محصول AR/VR</h2>
+      <div class="sub">لایه: فکتوری (Spatial UI) · اسکرولی‌تلینگ سه‌بعدی + فهرست انتظار — بدون شمارش معکوس و فوریت ساختگی</div>
+      <div class="flags">
+        <span class="chip note">تمام‌مشکی؛ کاغذ فقط در جدول مشخصات</span>
+        <span class="chip note">گرین: خاموش</span>
+        <span class="chip note">کداک: CTA فهرست انتظار، ایندیکیتور ناوبری مشخصات، خطوط اندازه‌گذاری</span>
+      </div>
+    </div>
+    <div class="frame">
+      <div class="sec">
+        <div class="sec-head"><span class="sec-num">۰۰</span><span class="sec-title">ناوبری + نوار چسبان مشخصات (شیشه)</span><span class="chip srf-ink">INK</span></div>
+        <div class="row cols-4">
+          <div class="b h-sm center">معرفی</div><div class="b h-sm center">قابلیت‌ها</div><div class="b h-sm center">مشخصات</div><div class="b h-sm center">فهرست انتظار</div>
+        </div>
+        <div class="meta">
+          <span class="chip m">تنها blur سنگین صفحه (شیشه ۴۰px)</span>
+          <span class="chip m">ایندیکیتور بخشِ فعال: کداک</span>
+          <span class="chip c">glassesPage.featureSections (anchors)</span>
+        </div>
+      </div>
+
+      <div class="sec">
+        <div class="sec-head"><span class="sec-num">۰۱</span><span class="sec-title">هیرو</span><span class="chip srf-ink">INK</span></div>
+        <div class="row cols-1-2">
+          <div class="b h-lg"><span class="t">تیتر نمایشی فارسی</span><span class="s">clamp تا ۱۰rem + زیرتیتر</span></div>
+          <div class="b media h-lg"><span class="t">تیزر محصول — پوستر سیاه‌وسفید</span></div>
+        </div>
+        <div class="meta"><span class="chip c">glassesPage.hero</span></div>
+      </div>
+
+      <div class="fold">خطِ تا — ۱۴۴۰×۹۰۰</div>
+
+      <div class="sec">
+        <div class="sec-head"><span class="sec-num">۰۲</span><span class="sec-title">اسکرولی‌تلینگ سه‌بعدی — صحنه‌های پین‌شده</span><span class="chip srf-ink">INK</span></div>
+        <p class="sec-desc">بومِ R3F پین می‌شود؛ اسکرول، دوربین/چرخش مدل را scrub می‌کند؛ پنل متن ویژگی‌ها عوض می‌شوند.</p>
+        <div class="row cols-2-1">
+          <div class="b media h-xl"><span class="t">بوم سه‌بعدی (پین‌شده)<br>GLB فشرده — draco/meshopt</span></div>
+          <div class="b h-xl"><span class="t">پنل ویژگی ۱ → ۲ → ۳</span><span class="s">سرصفحه، تیتر، بدنه — جابه‌جایی با اسکرول</span></div>
+        </div>
+        <div class="meta">
+          <span class="chip m">pin + scrub (ScrollTrigger)</span>
+          <span class="chip m">lazy، ssr:false — خارج از باندل مشترک</span>
+          <span class="chip m">fallback پوستر ایستا (reduced-motion / touch ضعیف)</span>
+          <span class="chip m">نسبت بوم رزرو — CLS صفر · canvas role=img + aria-label</span>
+          <span class="chip c">glassesPage.featureSections[]</span>
+          <span class="chip c">glassesPage.model3d</span>
+        </div>
+      </div>
+
+      <div class="sec">
+        <div class="sec-head"><span class="sec-num">۰۳</span><span class="sec-title">جدول مشخصات فنی</span><span class="chip srf-paper">PAPER</span></div>
+        <div class="row cols-2">
+          <div class="b h-md"><span class="t">گروه: نمایشگر</span><span class="s">ردیف‌های label/value — ارقام فارسی tabular</span></div>
+          <div class="b h-md"><span class="t">گروه: اپتیک / باتری / اتصال</span></div>
+        </div>
+        <div class="meta"><span class="chip m">خطوط اندازه‌گذاری کداک در نمای انفجاری</span><span class="chip c">glassesPage.specs[]</span></div>
+      </div>
+
+      <div class="sec">
+        <div class="sec-head"><span class="sec-num">۰۴</span><span class="sec-title">گالری</span><span class="chip srf-ink">INK</span></div>
+        <div class="row cols-4">
+          <div class="b media h-md"><span class="t">۱</span></div><div class="b media h-md"><span class="t">۲</span></div>
+          <div class="b media h-md"><span class="t">۳</span></div><div class="b media h-md"><span class="t">۴</span></div>
+        </div>
+        <div class="meta"><span class="chip m">سیاه‌وسفید → رنگ در in-view</span><span class="chip c">glassesPage.gallery[]</span></div>
+      </div>
+
+      <div class="sec">
+        <div class="sec-head"><span class="sec-num">۰۵</span><span class="sec-title">فهرست انتظار</span><span class="chip srf-ink">INK</span></div>
+        <div class="row cols-2-1">
+          <div class="b h-sm">ایمیل * + چک‌باکس رضایت *</div>
+          <div class="b h-sm center"><span class="kbtn">عضویت در فهرست</span></div>
+        </div>
+        <div class="meta">
+          <span class="chip m">حالت موفق: کاغذ روی مشکی — بدون تایمر</span>
+          <span class="chip c">glassesPage.waitlist → waitlistSignups</span>
+        </div>
+      </div>
+
+      <div class="sec">
+        <div class="sec-head"><span class="sec-num">۰۶</span><span class="sec-title">پرسش‌های متداول</span><span class="chip srf-ink">INK</span></div>
+        <div class="form-rows">
+          <div class="b">پرسش ۱ ▾</div><div class="b">پرسش ۲ ▾</div><div class="b">پرسش ۳ ▾</div>
+        </div>
+        <div class="meta"><span class="chip c">glassesPage.faq[]</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ AR CATALOG -->
+  <section class="sheet" id="ar-catalog">
+    <div class="sheet-head">
+      <span class="route">/factory/ar-catalog</span>
+      <h2>کاتالوگ AR — خدمات صنعتی</h2>
+      <div class="sub">لایه: فکتوری — کارت‌های شیشه‌ای (r=24) روی پس‌زمینهٔ عمق‌دار؛ عمق، خودِ پیام است</div>
+      <div class="flags"><span class="chip note">گرین ۰٫۰۵</span><span class="chip note">کداک: شماره‌های گام‌ها + خط اتصال</span></div>
+    </div>
+    <div class="frame">
+      <div class="sec">
+        <div class="sec-head"><span class="sec-num">۰۱</span><span class="sec-title">هیرو</span><span class="chip srf-ink">INK</span></div>
+        <div class="row cols-1-2">
+          <div class="b h-lg"><span class="t">گزارهٔ ارزش</span><span class="s">کاتالوگ محصولاتتان، در فضای واقعی مشتری</span></div>
+          <div class="b media h-lg"><span class="t">دموریل — Stream</span></div>
+        </div>
+        <div class="meta"><span class="chip c">arCatalogPage.hero</span></div>
+      </div>
+
+      <div class="fold">خطِ تا — ۱۴۴۰×۹۰۰</div>
+
+      <div class="sec">
+        <div class="sec-head"><span class="sec-num">۰۲</span><span class="sec-title">چطور کار می‌کند</span><span class="chip srf-ink">INK</span></div>
+        <div class="row cols-3">
+          <div class="b h-md"><span class="ednum">۱</span> <span class="t">اسکن محصول</span></div>
+          <div class="b h-md"><span class="ednum">۲</span> <span class="t">ساخت مدل و کاتالوگ</span></div>
+          <div class="b h-md"><span class="ednum">۳</span> <span class="t">مشاهده در AR</span></div>
+        </div>
+        <hr class="hair">
+        <div class="meta"><span class="chip m">خط موی کداک، گام‌ها را متصل می‌کند (عمدهٔ بودجهٔ کداک)</span><span class="chip c">arCatalogPage.steps[]</span></div>
+      </div>
+
+      <div class="sec">
+        <div class="sec-head"><span class="sec-num">۰۳</span><span class="sec-title">کاتالوگ نمونه — گرید کارت شیشه‌ای</span><span class="chip srf-ink">INK</span></div>
+        <div class="row cols-4">
+          <div class="b h-sm center">همهٔ صنایع</div><div class="b h-sm center">صنعتی</div><div class="b h-sm center">مبلمان</div><div class="b h-sm center">لوازم خانگی</div>
+        </div>
+        <div class="row cols-3">
+          <div class="b media h-md"><span class="t">آیتم ۰۱ — کارت شیشه</span></div>
+          <div class="b media h-md"><span class="t">آیتم ۰۲</span></div>
+          <div class="b media h-md"><span class="t">آیتم ۰۳</span></div>
+        </div>
+        <div class="meta">
+          <span class="chip m">لوپ تیزر ≤۸s فقط داخل کارت</span>
+          <span class="chip m">باز شدن کارت → مودال نمایشگر (lazy به‌ازای آیتم)</span>
+          <span class="chip c">arCatalogPage.featuredItems → catalogItems</span>
+          <span class="chip c">Link scroll={false}</span>
+        </div>
+      </div>
+
+      <div class="frame-label">اورلی — نمایشگر AR (مودال)</div>
+      <div class="frame">
+        <div class="sec">
+          <div class="sec-head"><span class="sec-num">—</span><span class="sec-title">نمایشگر سه‌بعدی آیتم</span><span class="chip srf-ink">INK</span></div>
+          <div class="row cols-2-1">
+            <div class="b media h-lg"><span class="t">بوم R3F — چرخش/زوم</span></div>
+            <div class="b h-lg">
+              <span class="t">مشخصات آیتم</span><span class="s">label/value</span>
+              <div class="form-rows">
+                <div class="b center"><span class="kbtn">مشاهده در AR</span></div>
+                <div class="b center"><span class="s">iOS: USDZ Quick Look · Android: GLB<br>دسکتاپ: QR برای موبایل</span></div>
+              </div>
+            </div>
+          </div>
+          <div class="meta">
+            <span class="chip m">اسکریم مشکی ۶۰٪ + blur ۸px · بستن با Esc و سوایپ پایین</span>
+            <span class="chip c">catalogItems.modelGlb / modelUsdz / specs</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="sec">
+        <div class="sec-head"><span class="sec-num">۰۴</span><span class="sec-title">صنایع</span><span class="chip srf-ink">INK</span></div>
+        <div class="row cols-6">
+          <div class="b h-sm center">چیپ</div><div class="b h-sm center">چیپ</div><div class="b h-sm center">چیپ</div>
+          <div class="b h-sm center">چیپ</div><div class="b h-sm center">چیپ</div><div class="b h-sm center">چیپ</div>
+        </div>
+        <div class="meta"><span class="chip c">arCatalogPage.industries → categories(industries)</span></div>
+      </div>
+
+      <div class="sec">
+        <div class="sec-head"><span class="sec-num">۰۵</span><span class="sec-title">CTA استعلام</span><span class="chip srf-ink">INK</span></div>
+        <div class="row"><div class="b h-sm center"><span class="kbtn">درخواست دمو</span></div></div>
+        <div class="meta"><span class="chip c">→ inquiries(type=ar-catalog)</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ ABOUT -->
+  <section class="sheet" id="about">
+    <div class="sheet-head">
+      <span class="route">/about</span>
+      <h2>درباره — پل روایت</h2>
+      <div class="sub">مشترک — تنها صفحه‌ای که لایهٔ آنالوگِ فیلم و لایهٔ فضاییِ فکتوری هم‌زیستی طراحی‌شده دارند</div>
+      <div class="flags"><span class="chip note">تم بصری در طول اسکرول تغییر می‌کند: کاغذ+گرین → مشکی+شیشه</span></div>
+    </div>
+    <div class="frame">
+      <div class="sec">
+        <div class="sec-head"><span class="sec-num">۰۱</span><span class="sec-title">مانیفست</span><span class="chip srf-paper">PAPER</span></div>
+        <div class="row"><div class="b h-md center statement">«آوای هنر هفتم» — بیانیهٔ برند با تایپ نمایشی</div></div>
+        <div class="meta"><span class="chip c">aboutPage.manifesto</span></div>
+      </div>
+
+      <div class="fold">خطِ تا — ۱۴۴۰×۹۰۰</div>
+
+      <div class="sec">
+        <div class="sec-head"><span class="sec-num">۰۲</span><span class="sec-title">خط زمان — ستون فقرات صفحه</span></div>
+        <p class="sec-desc">ریل پیشرفت کداک در ابتدای سطر (راست در RTL) طول کل خط زمان را طی می‌کند — خرج اصلی کداکِ صفحه.</p>
+        <div class="timeline">
+          <div class="tl-rail"></div>
+          <div>
+            <div class="tl-item"><span class="tl-era">darkroom</span> <strong>تاریکخانه</strong> — سال، تیتر، بدنه، مدیا <span class="chip srf-paper">PAPER · گرین ۰٫۱۵ · مونوکروم گرم · قاب پولاروید</span></div>
+            <div class="tl-item"><span class="tl-era">digital</span> <strong>دیجیتال</strong> — … <span class="chip srf-paper">PAPER → گذار</span></div>
+            <div class="tl-item"><span class="tl-era">cgi</span> <strong>CGI</strong> — … <span class="chip srf-ink">INK · گرین کم</span></div>
+            <div class="tl-item"><span class="tl-era">spatial</span> <strong>رایانش فضایی</strong> — … <span class="chip srf-ink">INK · پنل شیشه · عمق/پارالاکس</span></div>
+          </div>
+        </div>
+        <div class="meta">
+          <span class="chip m">scrub با اسکرول: color-mix پس‌زمینه، شفافیت گرین، blur — همه tween</span>
+          <span class="chip m">reduced-motion: برش‌های قطعی بین دوره‌ها، همهٔ محتوا ایستا و خوانا</span>
+          <span class="chip c">aboutPage.timeline[] (era, year, title, body, media)</span>
+        </div>
+      </div>
+
+      <div class="sec">
+        <div class="sec-head"><span class="sec-num">۰۳</span><span class="sec-title">دو خانه</span><span class="chip srf-ink">INK</span></div>
+        <div class="row cols-2">
+          <div class="b h-md center"><span class="t">AVH FILM</span><span class="s">← /film</span></div>
+          <div class="b h-md center"><span class="t">AVH FACTORY</span><span class="s">← /factory</span></div>
+        </div>
+        <div class="meta"><span class="chip note">آینهٔ دروازهٔ ورودی سایت</span><span class="chip c">aboutPage.housesSplit</span></div>
+      </div>
+
+      <div class="sec">
+        <div class="sec-head"><span class="sec-num">۰۴</span><span class="sec-title">تیم</span><span class="chip srf-ink">INK</span></div>
+        <div class="row cols-4">
+          <div class="b media h-md"><span class="t">پرتره</span></div><div class="b media h-md"><span class="t">پرتره</span></div>
+          <div class="b media h-md"><span class="t">پرتره</span></div><div class="b media h-md"><span class="t">پرتره</span></div>
+        </div>
+        <div class="meta">
+          <span class="chip m">سیاه‌وسفید → رنگ در hover</span>
+          <span class="chip note">نام فارسی + لاتین (LTR درون‌خطی)</span>
+          <span class="chip c">team (ordered)</span>
+        </div>
+      </div>
+
+      <div class="sec">
+        <div class="sec-head"><span class="sec-num">۰۵</span><span class="sec-title">ارزش‌ها / روش کار</span><span class="chip srf-ink">INK</span></div>
+        <div class="row cols-3"><div class="b h-sm">ارزش ۱</div><div class="b h-sm">ارزش ۲</div><div class="b h-sm">ارزش ۳</div></div>
+        <div class="meta"><span class="chip c">aboutPage.values[]</span></div>
+      </div>
+
+      <div class="sec">
+        <div class="sec-head"><span class="sec-num">۰۶</span><span class="sec-title">CTA تماس</span><span class="chip srf-ink">INK</span></div>
+        <div class="row"><div class="b h-sm center"><span class="kbtn">گفت‌وگو را شروع کنیم</span></div></div>
+        <div class="meta"><span class="chip c">aboutPage.contactCta</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ BLOG -->
+  <section class="sheet" id="blog">
+    <div class="sheet-head">
+      <span class="route">/blog · /blog/[slug]</span>
+      <h2>بلاگ — یادداشت‌های دو خانه</h2>
+      <div class="sub">مشترک — خواندن‌محور؛ آرام‌ترین رفتار سایت: فقط fade، بدون پین و پارالاکس، کرسر سیستمی روی متن</div>
+      <div class="flags"><span class="chip note">گرین: خاموش</span><span class="chip note">کداک: لینک‌ها، چیپ دسته، خط موی نقل‌قول</span></div>
+    </div>
+    <div class="frame">
+      <div class="sec">
+        <div class="sec-head"><span class="sec-num">۰۱</span><span class="sec-title">فهرست — پست ویژه</span><span class="chip srf-ink">INK</span></div>
+        <div class="row cols-2-1">
+          <div class="b media h-lg"><span class="t">کاور پست ویژه</span></div>
+          <div class="b h-lg"><span class="t">تیتر + خلاصه</span><span class="s">چیپ دسته (خط موی کداک) · تاریخ با ارقام فارسی · زمان مطالعه</span></div>
+        </div>
+        <div class="meta"><span class="chip c">blogPage.featuredPost → posts</span></div>
+      </div>
+
+      <div class="fold">خطِ تا — ۱۴۴۰×۹۰۰</div>
+
+      <div class="sec">
+        <div class="sec-head"><span class="sec-num">۰۲</span><span class="sec-title">فهرست زمانی — دو ستونه</span><span class="chip srf-ink">INK</span></div>
+        <div class="row cols-4">
+          <div class="b h-sm center">همه</div><div class="b h-sm center">فیلم</div><div class="b h-sm center">فکتوری</div><div class="b h-sm center">استودیو</div>
+        </div>
+        <div class="row cols-2">
+          <div class="b media h-md"><span class="t">کارت پست ۱</span></div>
+          <div class="b media h-md"><span class="t">کارت پست ۲</span></div>
+          <div class="b media h-md"><span class="t">کارت پست ۳</span></div>
+          <div class="b media h-md"><span class="t">کارت پست ۴</span></div>
+        </div>
+        <div class="meta">
+          <span class="chip m">fade ورود ۳۰۰ms — بدون stagger سنگین</span>
+          <span class="chip c">posts (paginated) · categories</span>
+          <span class="chip c">Link scroll={false}</span>
+        </div>
+      </div>
+
+      <div class="frame-label">قاب دوم — مقاله (/blog/[slug])</div>
+      <div class="frame">
+        <div class="sec">
+          <div class="sec-head"><span class="sec-num">۰۱</span><span class="sec-title">سربرگ مقاله</span><span class="chip srf-paper">PAPER</span></div>
+          <div class="row"><div class="b h-sm"><span class="t">تیتر (clamp حداکثر ۳٫۵rem — نه ۱۰rem)</span><span class="s">نویسنده · تاریخ فارسی · زمان مطالعه</span></div></div>
+          <div class="row"><div class="b media h-md"><span class="t">کاور</span></div></div>
+          <div class="meta"><span class="chip c">posts.title / author → team / publishedAt</span></div>
+        </div>
+        <div class="sec">
+          <div class="sec-head"><span class="sec-num">۰۲</span><span class="sec-title">بدنهٔ مقاله</span><span class="chip srf-paper">PAPER</span></div>
+          <p class="sec-desc">متن فارسی روی کاغذ — اندازهٔ سطر ~۶۰ نویسه، ارتفاع خط ۱٫۸. جاسازها: تصویر (سیاه‌وسفید→رنگ)، ویدیو (Stream)، نقل‌قول با خط موی کداک، کد LTR.</p>
+          <div class="row"><div class="b h-lg center"><span class="s">ستون متن باریک در مرکز — عرض کامل نمی‌شود</span></div></div>
+          <div class="meta"><span class="chip m">فقط fade — CLS صفر، خوانایی فوری</span><span class="chip c">posts.body (richText, L)</span></div>
+        </div>
+        <div class="sec">
+          <div class="sec-head"><span class="sec-num">۰۳</span><span class="sec-title">مرتبط‌ها + بازگشت</span><span class="chip srf-ink">INK</span></div>
+          <div class="row cols-3">
+            <div class="b h-sm">پست مرتبط ۱</div><div class="b h-sm">پست مرتبط ۲</div>
+            <div class="b h-sm center"><span class="kbtn">← خانهٔ مرتبط (فیلم/فکتوری)</span></div>
+          </div>
+          <div class="meta"><span class="chip c">posts.related · posts.house</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <p class="foot-note" style="text-align:center">
+    وایرفریم کم‌جزئیات — نسبت‌ها تقریبی‌اند؛ اندازه‌های نهایی از توکن‌ها (<span dir="ltr" style="font-family:ui-monospace,monospace;font-size:11px">tokens.css</span>) می‌آیند.
+    ناوبری مشترک در برگه‌های ۲ تا ۸ به‌اختصار آمده است.
+  </p>
+</div>
